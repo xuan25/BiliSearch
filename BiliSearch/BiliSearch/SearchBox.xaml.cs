@@ -211,13 +211,13 @@ namespace BiliSearch
                         else if (suggest.GetType() == typeof(SeasonSuggest))
                         {
                             SeasonSuggest seasonSuggest = (SeasonSuggest)suggest;
-                            listBoxItem.Content = new SeasonSuggestItem(seasonSuggest);
+                            listBoxItem.Content = new SuggestItemSeason(seasonSuggest);
                             listBoxItem.Tag = seasonSuggest.Uri;
                         }
                         else if (suggest.GetType() == typeof(UserSuggest))
                         {
                             UserSuggest userSuggest = (UserSuggest)suggest;
-                            listBoxItem.Content = new UserSuggestItem(userSuggest);
+                            listBoxItem.Content = new SuggestItemUser(userSuggest);
                             listBoxItem.Tag = userSuggest.Uri;
                         }
                         SuggestList.Items.Add(listBoxItem);
@@ -237,8 +237,9 @@ namespace BiliSearch
             Search?.Invoke(this, InputBox.Text);
         }
 
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            await GetSuggestAsync("", 0);
             SuggestList.Visibility = Visibility.Hidden;
             Search?.Invoke(this, InputBox.Text);
         }
@@ -319,7 +320,7 @@ namespace BiliSearch
 
         }
 
-        private void InputBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void InputBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)
             {
@@ -330,12 +331,13 @@ namespace BiliSearch
             else if(e.Key == Key.Enter)
             {
                 SearchBtn.Focus();
+                await GetSuggestAsync("", 0);
                 SuggestList.Visibility = Visibility.Hidden;
                 Search?.Invoke(this, InputBox.Text);
             }
         }
 
-        private void SuggestList_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void SuggestList_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)
             {
@@ -353,7 +355,8 @@ namespace BiliSearch
             else if (e.Key == Key.Enter)
             {
                 SearchBtn.Focus();
-                InputBox.Text = ((ListBox)sender).SelectedItem.ToString();
+                await GetSuggestAsync("", 0);
+                InputBox.Text = ((ListBoxItem)((ListBox)sender).SelectedItem).Tag.ToString();
                 Search?.Invoke(this, InputBox.Text);
                 e.Handled = true;
             }
