@@ -8,9 +8,9 @@ namespace BiliSearch
     /// <summary>
     /// UserSuggestItem.xaml 的交互逻辑
     /// </summary>
-    public partial class UserSuggestItem : UserControl
+    public partial class SuggestItemUser : UserControl
     {
-        public UserSuggestItem(SearchBox.UserSuggest userSuggest)
+        public SuggestItemUser(SearchBox.UserSuggest userSuggest)
         {
             InitializeComponent();
 

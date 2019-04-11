@@ -8,9 +8,9 @@ namespace BiliSearch
     /// <summary>
     /// SeasonSuggest.xaml 的交互逻辑
     /// </summary>
-    public partial class SeasonSuggestItem : UserControl
+    public partial class SuggestItemSeason : UserControl
     {
-        public SeasonSuggestItem(SearchBox.SeasonSuggest seasonSuggest)
+        public SuggestItemSeason(SearchBox.SeasonSuggest seasonSuggest)
         {
             InitializeComponent();
 
