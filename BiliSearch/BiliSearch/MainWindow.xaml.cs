@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Windows;
 
 namespace BiliSearch
@@ -15,7 +18,7 @@ namespace BiliSearch
 
         private void SearchBox_Search(SearchBox sender, string text)
         {
-            LogBox.Text = text;
+            ResultBox.Search(text);
         }
 
         private void SearchBox_SuggestionsRecieved(SearchBox sender, string text, string json)

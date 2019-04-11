@@ -59,14 +59,20 @@
     <Compile Include="SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SeasonSuggestItem.xaml.cs">
-      <DependentUpon>SeasonSuggestItem.xaml</DependentUpon>
+    <Compile Include="SearchResultBox.xaml.cs">
+      <DependentUpon>SearchResultBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SearchResultVideo.xaml.cs">
+      <DependentUpon>SearchResultVideo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SuggestItemSeason.xaml.cs">
+      <DependentUpon>SuggestItemSeason.xaml</DependentUpon>
     </Compile>
     <Compile Include="SuggestItem.xaml.cs">
       <DependentUpon>SuggestItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserSuggestItem.xaml.cs">
-      <DependentUpon>UserSuggestItem.xaml</DependentUpon>
+    <Compile Include="SuggestItemUser.xaml.cs">
+      <DependentUpon>SuggestItemUser.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -87,7 +93,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SeasonSuggestItem.xaml">
+    <Page Include="SearchResultBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchResultVideo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SuggestItemSeason.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -95,7 +109,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserSuggestItem.xaml">
+    <Page Include="SuggestItemUser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -131,6 +145,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\img_loading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\a.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
