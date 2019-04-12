@@ -9,7 +9,7 @@ namespace Json
     /// Author: Xuan525
     /// Date: 08/04/2019
     /// </summary>
-    public class JsonArray : DynamicObject, IEnumerable
+    public class JsonArray : DynamicObject, IEnumerable, IJson
     {
         private List<object> list = new List<object>();
 
@@ -64,6 +64,54 @@ namespace Json
                 list.Add(value);
             }
             return true;
+        }
+
+        public IJson GetValue(object index)
+        {
+            if (list.Count > (int)index)
+                return (IJson)list[(int)index];
+            else
+                throw new System.NullReferenceException();
+        }
+
+        public bool SetValue(object index, object value)
+        {
+            if (list.Count > (int)index)
+                list[(int)index] = value;
+            else
+            {
+                while (list.Count < (int)index)
+                    list.Add(null);
+                list.Add(value);
+            }
+            return true;
+        }
+
+        public bool Contains(object index)
+        {
+            if ((int)index < list.Count)
+                return true;
+            return false;
+        }
+
+        public string ToString()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public long ToLong()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public double ToDouble()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool ToBool()
+        {
+            throw new System.NotImplementedException();
         }
 
         public class Enumerator : IEnumerator<object>

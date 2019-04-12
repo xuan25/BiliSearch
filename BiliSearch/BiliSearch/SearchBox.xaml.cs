@@ -61,21 +61,21 @@ namespace BiliSearch
             public string Area;
             public string Label;
 
-            public SeasonSuggest(dynamic item)
+            public SeasonSuggest(IJson item)
             {
-                Position = (uint)item.position;
+                Position = (uint)(item.GetValue("position").ToLong());
                 if (item.Contains("title"))
-                    Title = item.title;
+                    Title = item.GetValue("title").ToString();
                 else
                     Title = null;
-                Keyword = item.keyword;
-                Cover = Regex.Unescape("https:" + item.Cover);
-                Uri = Regex.Unescape(item.uri);
-                Ptime = item.ptime;
-                SeasonTypeName = item.season_type_name;
-                Area = item.area;
+                Keyword = item.GetValue("keyword").ToString();
+                Cover = Regex.Unescape("https:" + item.GetValue("Cover").ToString());
+                Uri = Regex.Unescape(item.GetValue("uri").ToString());
+                Ptime = item.GetValue("ptime").ToLong();
+                SeasonTypeName = item.GetValue("season_type_name").ToString();
+                Area = item.GetValue("area").ToString();
                 if (item.Contains("label"))
-                    Label = item.label;
+                    Label = item.GetValue("label").ToString();
                 else
                     Label = null;
             }
@@ -110,16 +110,16 @@ namespace BiliSearch
             public long Fans;
             public long Archives;
 
-            public UserSuggest(dynamic item)
+            public UserSuggest(IJson item)
             {
-                Position = (uint)item.position;
-                Title = item.title;
-                Keyword = item.keyword;
-                Cover = Regex.Unescape("https:" + item.Cover);
-                Uri = Regex.Unescape(item.uri);
-                Level = (uint)item.level;
-                Fans = item.fans;
-                Archives = item.archives;
+                Position = (uint)item.GetValue("position").ToLong();
+                Title = item.GetValue("title").ToString();
+                Keyword = item.GetValue("keyword").ToString();
+                Cover = Regex.Unescape("https:" + item.GetValue("Cover").ToString());
+                Uri = Regex.Unescape(item.GetValue("uri").ToString());
+                Level = (uint)item.GetValue("level").ToLong();
+                Fans = item.GetValue("fans").ToLong();
+                Archives = item.GetValue("archives").ToLong();
             }
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
@@ -156,19 +156,19 @@ namespace BiliSearch
 
             }
 
-            public Suggest(dynamic item)
+            public Suggest(IJson item)
             {
-                Position = (uint)item.position;
+                Position = (uint)item.GetValue("position").ToLong();
 
                 if (item.Contains("title"))
-                    Title = item.title;
+                    Title = item.GetValue("title").ToString();
                 else
                     Title = null;
 
-                Keyword = item.keyword;
+                Keyword = item.GetValue("keyword").ToString();
 
                 if (item.Contains("sug_type"))
-                    Type = item.sug_type;
+                    Type = item.GetValue("sug_type").ToString();
                 else
                     Type = null;
             }
@@ -285,24 +285,24 @@ namespace BiliSearch
             dataStream.Close();
 
             SuggestionsRecieved?.Invoke(this, text, result);
-            dynamic json = JsonParser.Parse(result);
+            IJson json = JsonParser.Parse(result);
 
-            if (json.data.Contains("list"))
+            if (json.GetValue("data").Contains("list"))
             {
                 List<Suggest> suggests = new List<Suggest>();
-                foreach (dynamic i in json.data.list)
+                foreach (IJson i in json.GetValue("data").GetValue("list"))
                 {
                     if (!i.Contains("sug_type"))
                     {
                         Suggest suggest = new Suggest(i);
                         suggests.Add(suggest);
                     }
-                    else if(i.sug_type == "pgc")
+                    else if(i.GetValue("sug_type").ToString() == "pgc")
                     {
                         SeasonSuggest seasonSuggest = new SeasonSuggest(i);
                         suggests.Add(seasonSuggest);
                     }
-                    else if (i.sug_type == "user")
+                    else if (i.GetValue("sug_type").ToString() == "user")
                     {
                         UserSuggest userSuggest = new UserSuggest(i);
                         suggests.Add(userSuggest);

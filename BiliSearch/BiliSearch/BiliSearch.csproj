@@ -56,6 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BiliApi.cs" />
+    <Compile Include="Json\IJson.cs" />
+    <Compile Include="Json\JsonValue.cs" />
     <Compile Include="SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
@@ -145,9 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\img_loading.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="img\a.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

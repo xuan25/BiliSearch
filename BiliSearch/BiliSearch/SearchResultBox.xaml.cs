@@ -38,13 +38,13 @@ namespace BiliSearch
             public long Pubdate;
             public string Author;
 
-            public Video(dynamic json)
+            public Video(IJson json)
             {
-                Pic = "https:" + Regex.Unescape(json.pic);
-                Title = System.Net.WebUtility.HtmlDecode(Regex.Unescape(json.title));
-                Play = json.play;
-                Pubdate = json.pubdate;
-                Author = Regex.Unescape(json.author);
+                Pic = "https:" + Regex.Unescape(json.GetValue("pic").ToString());
+                Title = System.Net.WebUtility.HtmlDecode(Regex.Unescape(json.GetValue("title").ToString()));
+                Play = json.GetValue("play").ToLong();
+                Pubdate = json.GetValue("pubdate").ToLong();
+                Author = Regex.Unescape(json.GetValue("author").ToString());
             }
 
             public Task<System.Drawing.Bitmap> GetPicAsync()
@@ -99,14 +99,14 @@ namespace BiliSearch
 
             Console.WriteLine(result);
 
-            dynamic json = JsonParser.Parse(result);
+            IJson json = JsonParser.Parse(result);
 
             ContentPanel.Children.Clear();
 
             switch (type)
             {
                 case "video":
-                    foreach (dynamic v in json.data.result.video)
+                    foreach (IJson v in json.GetValue("data").GetValue("result").GetValue("video"))
                     {
                         Video video = new Video(v);
                         ContentPanel.Children.Add(new SearchResultVideo(video));
