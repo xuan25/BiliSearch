@@ -82,7 +82,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                return BiliApi.GetCoverAsync(Cover);
+                return BiliApi.GetImageAsync(Cover);
             }
         }
 
@@ -108,7 +108,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                return BiliApi.GetCoverAsync(Cover);
+                return BiliApi.GetImageAsync(Cover);
             }
         }
 

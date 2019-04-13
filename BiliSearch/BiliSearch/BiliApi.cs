@@ -98,17 +98,17 @@ namespace BiliSearch
             return task;
         }
 
-        public static Task<System.Drawing.Bitmap> GetCoverAsync(string url)
+        public static Task<System.Drawing.Bitmap> GetImageAsync(string url)
         {
             Task<System.Drawing.Bitmap> task = new Task<System.Drawing.Bitmap>(() =>
             {
-                return GetCover(url);
+                return GetImage(url);
             });
             task.Start();
             return task;
         }
 
-        public static System.Drawing.Bitmap GetCover(string url)
+        public static System.Drawing.Bitmap GetImage(string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();

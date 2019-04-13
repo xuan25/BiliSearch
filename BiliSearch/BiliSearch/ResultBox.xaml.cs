@@ -50,7 +50,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetPicAsync()
             {
-                return BiliApi.GetCoverAsync(Pic);
+                return BiliApi.GetImageAsync(Pic);
             }
         }
 
@@ -81,7 +81,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                return BiliApi.GetCoverAsync(Cover);
+                return BiliApi.GetImageAsync(Cover);
             }
         }
 
