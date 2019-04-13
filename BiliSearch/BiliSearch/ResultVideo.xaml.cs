@@ -26,9 +26,6 @@ namespace BiliSearch
         {
             InitializeComponent();
 
-            this.Height = 200;
-            this.Width = 170;
-
             TitleBox.Inlines.Clear();
             MatchCollection mc = Regex.Matches(video.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
             foreach (Match m in mc)

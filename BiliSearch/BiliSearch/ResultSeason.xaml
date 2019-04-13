@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BiliSearch"
              mc:Ignorable="d" 
-             d:DesignHeight="216" d:DesignWidth="980" Margin="16,10" MaxWidth="980">
-    <Grid>
+             d:DesignHeight="237" d:DesignWidth="980" Height="237" Width="980" MaxWidth="980" Margin="16,0" BorderBrush="#e5e9ef" BorderThickness="0,0,0,1">
+    <Grid Margin="0,20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="160"/>
             <ColumnDefinition/>
@@ -31,10 +31,12 @@
                 <RowDefinition Height="130"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0" Width="44" Height="22" CornerRadius="11" BorderThickness="1" BorderBrush="#979797" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock x:Name="TypeBox" Text="番剧" FontSize="12" Foreground="#979797" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </Border>
-            <TextBlock x:Name="TitleBox" Grid.Row="0" Text="" FontSize="16" Margin="58,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal">
+                <Border Grid.Row="0" Padding="9,0" Height="22" CornerRadius="11" BorderThickness="1" BorderBrush="#979797" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock x:Name="TypeBox" Text="" FontSize="12" Foreground="#979797" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Border>
+                <TextBlock x:Name="TitleBox" Grid.Row="0" Text="" FontSize="16" Margin="12,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"/>
+            </StackPanel>
             <TextBlock Grid.Row="1" FontSize="12" LineHeight="20" Foreground="#b0b7bd" VerticalAlignment="Top" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis">
                 <Run Text="风格： "/>
                 <Run x:Name="StylesBox" Text=""/>

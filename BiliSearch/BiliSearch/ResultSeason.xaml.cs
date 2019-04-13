@@ -25,8 +25,6 @@ namespace BiliSearch
         {
             InitializeComponent();
 
-            this.Height = 216;
-
             TypeBox.Text = season.SeasonTypeName;
 
             TitleBox.Inlines.Clear();

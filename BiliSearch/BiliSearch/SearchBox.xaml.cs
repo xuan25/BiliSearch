@@ -191,12 +191,12 @@ namespace BiliSearch
                 SuggestList.Visibility = Visibility.Hidden;
         }
 
-        private async void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Confirm();
         }
 
-        private async void SearchButton_Click(object sender, RoutedEventArgs e)
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             Confirm();
         }
@@ -272,7 +272,7 @@ namespace BiliSearch
 
         }
 
-        private async void InputBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void InputBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)
             {
@@ -286,7 +286,7 @@ namespace BiliSearch
             }
         }
 
-        private async void SuggestList_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void SuggestList_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)
             {
