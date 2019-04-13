@@ -25,15 +25,8 @@ namespace BiliSearch
             this.Loaded += async delegate (object senderD, RoutedEventArgs eD)
             {
                 System.Drawing.Bitmap bitmap = await seasonSuggest.GetCoverAsync();
-                ImageBox.Source = BitmapToImageSource(bitmap);
+                ImageBox.Source = BiliApi.BitmapToImageSource(bitmap);
             };
-        }
-
-        private BitmapSource BitmapToImageSource(System.Drawing.Bitmap bitmap)
-        {
-            IntPtr ip = bitmap.GetHbitmap();
-            BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            return bitmapSource;
         }
     }
 }

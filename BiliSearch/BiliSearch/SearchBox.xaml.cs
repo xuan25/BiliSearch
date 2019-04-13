@@ -82,23 +82,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                Task<System.Drawing.Bitmap> task = new Task<System.Drawing.Bitmap>(() =>
-                {
-                    return GetCover();
-                });
-                task.Start();
-                return task;
-            }
-
-            public System.Drawing.Bitmap GetCover()
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Cover);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
-                response.Close();
-                dataStream.Close();
-                return bitmap;
+                return BiliApi.GetCoverAsync(Cover);
             }
         }
 
@@ -124,23 +108,7 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                Task<System.Drawing.Bitmap> task = new Task<System.Drawing.Bitmap>(() =>
-                {
-                    return GetCover();
-                });
-                task.Start();
-                return task;
-            }
-
-            public System.Drawing.Bitmap GetCover()
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Cover);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
-                response.Close();
-                dataStream.Close();
-                return bitmap;
+                return BiliApi.GetCoverAsync(Cover);
             }
         }
 
@@ -172,13 +140,6 @@ namespace BiliSearch
                 else
                     Type = null;
             }
-        }
-
-        private BitmapSource BitmapToImageSource(System.Drawing.Bitmap bitmap)
-        {
-            IntPtr ip = bitmap.GetHbitmap();
-            BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            return bitmapSource;
         }
 
         private async void InputBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -280,20 +241,7 @@ namespace BiliSearch
             Dictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add("highlight", "1");
             dic.Add("keyword", text);
-            string baseUrl = "https://app.bilibili.com/x/v2/search/suggest3";
-            string payloads = BiliApi.DicToParams(dic, true);
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format("{0}?{1}", baseUrl, payloads));
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string result = reader.ReadToEnd();
-            reader.Close();
-            response.Close();
-            dataStream.Close();
-
-            SuggestionsRecieved?.Invoke(this, text, result);
-            IJson json = JsonParser.Parse(result);
+            IJson json = BiliApi.GetJsonResult("https://app.bilibili.com/x/v2/search/suggest3", dic);
 
             if (json.GetValue("data").Contains("list"))
             {

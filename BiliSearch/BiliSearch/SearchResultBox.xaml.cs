@@ -50,27 +50,11 @@ namespace BiliSearch
 
             public Task<System.Drawing.Bitmap> GetPicAsync()
             {
-                Task<System.Drawing.Bitmap> task = new Task<System.Drawing.Bitmap>(() =>
-                {
-                    return GetPic();
-                });
-                task.Start();
-                return task;
-            }
-
-            public System.Drawing.Bitmap GetPic()
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Pic);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
-                response.Close();
-                dataStream.Close();
-                return bitmap;
+                return BiliApi.GetCoverAsync(Pic);
             }
         }
 
-        public class Bangumi
+        public class Season
         {
             public string Cover;
             public string Title;
@@ -79,8 +63,10 @@ namespace BiliSearch
             public long Pubtime;
             public string Cv;
             public string Description;
+            public long SeasonId;
+            public string SeasonTypeName;
 
-            public Bangumi(IJson json)
+            public Season(IJson json, IJson cardsJson)
             {
                 Cover = "https:" + Regex.Unescape(json.GetValue("cover").ToString());
                 Title = System.Net.WebUtility.HtmlDecode(Regex.Unescape(json.GetValue("title").ToString()));
@@ -89,27 +75,13 @@ namespace BiliSearch
                 Pubtime = json.GetValue("pubtime").ToLong();
                 Cv = Regex.Unescape(json.GetValue("cv").ToString());
                 Description = Regex.Unescape(json.GetValue("desc").ToString());
+                SeasonId = json.GetValue("season_id").ToLong();
+                SeasonTypeName = cardsJson.GetValue("result").GetValue(SeasonId.ToString()).GetValue("season_type_name").ToString();
             }
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()
             {
-                Task<System.Drawing.Bitmap> task = new Task<System.Drawing.Bitmap>(() =>
-                {
-                    return GetCover();
-                });
-                task.Start();
-                return task;
-            }
-
-            public System.Drawing.Bitmap GetCover()
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Cover);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
-                response.Close();
-                dataStream.Close();
-                return bitmap;
+                return BiliApi.GetCoverAsync(Cover);
             }
         }
 
@@ -136,45 +108,16 @@ namespace BiliSearch
                 
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            ContentPanel.Children.Clear();
+            LoadingPrompt.Visibility = Visibility.Visible;
             Task task = new Task(() =>
             {
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    ContentPanel.Children.Clear();
-                    LoadingPrompt.Visibility = Visibility.Visible;
-                }));
                 string type = NavType;
                 IJson json = GetResult(text, type);
-                switch (type)
-                {
-                    case "video":
-                        foreach (IJson v in json.GetValue("data").GetValue("result"))
-                        {
-                            Video video = new Video(v);
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                ContentPanel.Children.Add(new SearchResultVideo(video));
-                            }));
-                        }
-                        break;
-                    case "media_bangumi":
-                        foreach (IJson v in json.GetValue("data").GetValue("result"))
-                        {
-                            Bangumi bangumi = new Bangumi(v);
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                ContentPanel.Children.Add(new SearchResultBangumi(bangumi));
-                            }));
-                            
-                        }
-                        break;
-                    case "media_ft":
-                        break;
-                    case "bili_user":
-                        break;
-                }
                 Dispatcher.Invoke(new Action(() =>
                 {
+                    ShowResult(json, type);
                     LoadingPrompt.Visibility = Visibility.Hidden;
                 }));
             }, cancellationTokenSource.Token);
@@ -187,27 +130,7 @@ namespace BiliSearch
             ContentPanel.Children.Clear();
             string type = NavType;
             IJson json = GetResult(text, type);
-            switch (type)
-            {
-                case "video":
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        Video video = new Video(v);
-                        ContentPanel.Children.Add(new SearchResultVideo(video));
-                    }
-                    break;
-                case "media_bangumi":
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        Bangumi bangumi = new Bangumi(v);
-                        ContentPanel.Children.Add(new SearchResultBangumi(bangumi));
-                    }
-                    break;
-                case "media_ft":
-                    break;
-                case "bili_user":
-                    break;
-            }
+            ShowResult(json, type);
         }
 
         private IJson GetResult(string text, string type)
@@ -218,22 +141,56 @@ namespace BiliSearch
             dic.Add("highlight", "1");
             dic.Add("search_type", type);
             dic.Add("keyword", text);
-            string baseUrl = "https://api.bilibili.com/x/web-interface/search/type";
-            string payloads = BiliApi.DicToParams(dic, true);
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format("{0}?{1}", baseUrl, payloads));
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string result = reader.ReadToEnd();
-            reader.Close();
-            response.Close();
-            dataStream.Close();
-
-            Console.WriteLine(result);
-
-            IJson json = JsonParser.Parse(result);
+            IJson json = BiliApi.GetJsonResult("https://api.bilibili.com/x/web-interface/search/type", dic);
             return json;
+        }
+
+        private async void ShowResult(IJson json, string type)
+        {
+            switch (type)
+            {
+                case "video":
+                    foreach (IJson v in json.GetValue("data").GetValue("result"))
+                    {
+                        Video video = new Video(v);
+                        ContentPanel.Children.Add(new SearchResultVideo(video));
+                    }
+                    break;
+                case "media_bangumi":
+                    StringBuilder stringBuilder = new StringBuilder();
+                    foreach (IJson v in json.GetValue("data").GetValue("result"))
+                    {
+                        stringBuilder.Append(',');
+                        stringBuilder.Append(v.GetValue("season_id").ToString());
+                    }
+                    Dictionary<string, string> dic = new Dictionary<string, string>();
+                    dic.Add("season_ids", stringBuilder.ToString().Substring(1));
+                    IJson cardsJson = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic);
+                    foreach (IJson v in json.GetValue("data").GetValue("result"))
+                    {
+                        Season season = new Season(v, cardsJson);
+                        ContentPanel.Children.Add(new SearchResultSeason(season));
+                    }
+                    break;
+                case "media_ft":
+                    StringBuilder stringBuilder1 = new StringBuilder();
+                    foreach (IJson v in json.GetValue("data").GetValue("result"))
+                    {
+                        stringBuilder1.Append(',');
+                        stringBuilder1.Append(v.GetValue("season_id").ToString());
+                    }
+                    Dictionary<string, string> dic1 = new Dictionary<string, string>();
+                    dic1.Add("season_ids", stringBuilder1.ToString().Substring(1));
+                    IJson cardsJson1 = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic1);
+                    foreach (IJson v in json.GetValue("data").GetValue("result"))
+                    {
+                        Season season = new Season(v, cardsJson1);
+                        ContentPanel.Children.Add(new SearchResultSeason(season));
+                    }
+                    break;
+                case "bili_user":
+                    break;
+            }
         }
 
         private async void RadioButton_Checked(object sender, RoutedEventArgs e)
