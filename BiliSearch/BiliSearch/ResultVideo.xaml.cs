@@ -19,10 +19,10 @@ namespace BiliSearch
     /// <summary>
     /// SearchResultVideo.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchResultVideo : UserControl
+    public partial class ResultVideo : UserControl
     {
 
-        public SearchResultVideo(SearchResultBox.Video video)
+        public ResultVideo(ResultBox.Video video)
         {
             InitializeComponent();
 

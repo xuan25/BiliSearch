@@ -19,9 +19,9 @@ namespace BiliSearch
     /// <summary>
     /// SearchResultBangumi.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchResultSeason : UserControl
+    public partial class ResultSeason : UserControl
     {
-        public SearchResultSeason(SearchResultBox.Season season)
+        public ResultSeason(ResultBox.Season season)
         {
             InitializeComponent();
 

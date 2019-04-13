@@ -61,14 +61,14 @@
     <Compile Include="SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SearchResultSeason.xaml.cs">
-      <DependentUpon>SearchResultSeason.xaml</DependentUpon>
+    <Compile Include="ResultSeason.xaml.cs">
+      <DependentUpon>ResultSeason.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SearchResultBox.xaml.cs">
-      <DependentUpon>SearchResultBox.xaml</DependentUpon>
+    <Compile Include="ResultBox.xaml.cs">
+      <DependentUpon>ResultBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SearchResultVideo.xaml.cs">
-      <DependentUpon>SearchResultVideo.xaml</DependentUpon>
+    <Compile Include="ResultVideo.xaml.cs">
+      <DependentUpon>ResultVideo.xaml</DependentUpon>
     </Compile>
     <Compile Include="SuggestItemSeason.xaml.cs">
       <DependentUpon>SuggestItemSeason.xaml</DependentUpon>
@@ -118,15 +118,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SearchResultSeason.xaml">
+    <Page Include="ResultSeason.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SearchResultBox.xaml">
+    <Page Include="ResultBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SearchResultVideo.xaml">
+    <Page Include="ResultVideo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

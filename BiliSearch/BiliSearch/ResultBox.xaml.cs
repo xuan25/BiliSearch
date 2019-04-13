@@ -23,7 +23,7 @@ namespace BiliSearch
     /// <summary>
     /// SearchResultBox.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchResultBox : UserControl
+    public partial class ResultBox : UserControl
     {
         public delegate void SelectedDel(string msg);
         public event SelectedDel VedioSelected;
@@ -85,7 +85,7 @@ namespace BiliSearch
             }
         }
 
-        public SearchResultBox()
+        public ResultBox()
         {
             InitializeComponent();
         }
@@ -153,7 +153,7 @@ namespace BiliSearch
                     foreach (IJson v in json.GetValue("data").GetValue("result"))
                     {
                         Video video = new Video(v);
-                        ContentPanel.Children.Add(new SearchResultVideo(video));
+                        ContentPanel.Children.Add(new ResultVideo(video));
                     }
                     break;
                 case "media_bangumi":
@@ -169,7 +169,7 @@ namespace BiliSearch
                     foreach (IJson v in json.GetValue("data").GetValue("result"))
                     {
                         Season season = new Season(v, cardsJson);
-                        ContentPanel.Children.Add(new SearchResultSeason(season));
+                        ContentPanel.Children.Add(new ResultSeason(season));
                     }
                     break;
                 case "media_ft":
@@ -185,7 +185,7 @@ namespace BiliSearch
                     foreach (IJson v in json.GetValue("data").GetValue("result"))
                     {
                         Season season = new Season(v, cardsJson1);
-                        ContentPanel.Children.Add(new SearchResultSeason(season));
+                        ContentPanel.Children.Add(new ResultSeason(season));
                     }
                     break;
                 case "bili_user":
