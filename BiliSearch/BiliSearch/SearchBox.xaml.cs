@@ -173,13 +173,13 @@ namespace BiliSearch
                         {
                             SeasonSuggest seasonSuggest = (SeasonSuggest)suggest;
                             listBoxItem.Content = new SuggestItemSeason(seasonSuggest);
-                            listBoxItem.Tag = seasonSuggest.Uri;
+                            listBoxItem.Tag = seasonSuggest.Keyword;
                         }
                         else if (suggest.GetType() == typeof(UserSuggest))
                         {
                             UserSuggest userSuggest = (UserSuggest)suggest;
                             listBoxItem.Content = new SuggestItemUser(userSuggest);
-                            listBoxItem.Tag = userSuggest.Uri;
+                            listBoxItem.Tag = userSuggest.Keyword;
                         }
                         SuggestList.Items.Add(listBoxItem);
                     }
@@ -189,16 +189,6 @@ namespace BiliSearch
             }
             else
                 SuggestList.Visibility = Visibility.Hidden;
-        }
-
-        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Confirm();
-        }
-
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            Confirm();
         }
 
         private CancellationTokenSource cancellationTokenSource;
@@ -308,6 +298,17 @@ namespace BiliSearch
                 e.Handled = true;
             }
             e.Handled = true;
+        }
+
+        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            InputBox.Text = ((ListBoxItem)((ListBox)sender).SelectedItem).Tag.ToString();
+            Confirm();
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            Confirm();
         }
 
         private async void Confirm()
