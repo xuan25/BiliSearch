@@ -151,7 +151,7 @@ namespace BiliSearch
                 {
                     suggests = await GetSuggestAsync(InputBox.Text, SuggestDelay);
                 }
-                catch (AggregateException ex)
+                catch (TaskCanceledException)
                 {
                     
                 }
@@ -195,14 +195,7 @@ namespace BiliSearch
         private Task<List<Suggest>> GetSuggestAsync(string text, int delay)
         {
             if(cancellationTokenSource != null)
-                try
-                {
-                    cancellationTokenSource.Cancel();
-                }
-                catch (Exception)
-                {
-
-                }
+                cancellationTokenSource.Cancel();
                 
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
@@ -302,7 +295,7 @@ namespace BiliSearch
 
         private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            InputBox.Text = ((ListBoxItem)((ListBox)sender).SelectedItem).Tag.ToString();
+            InputBox.Text = ((ListBoxItem)sender).Tag.ToString();
             Confirm();
         }
 

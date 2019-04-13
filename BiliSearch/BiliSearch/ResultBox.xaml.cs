@@ -124,14 +124,7 @@ namespace BiliSearch
         public Task SearchAsync(string text)
         {
             if (cancellationTokenSource != null)
-                try
-                {
-                    cancellationTokenSource.Cancel();
-                }
-                catch (Exception)
-                {
-
-                }
+                cancellationTokenSource.Cancel();
                 
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
