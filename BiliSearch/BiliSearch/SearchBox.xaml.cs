@@ -319,7 +319,11 @@ namespace BiliSearch
         {
             double w = (double)values[0];
             double h = (double)values[1];
-            Rect rect = new Rect(0, 0, w, h);
+            Rect rect;
+            if (w > 0 && h > 0)
+                rect = new Rect(0, 0, w, h);
+            else
+                rect = new Rect(0, 0, 1, 1);
             return rect;
         }
 
@@ -336,15 +340,12 @@ namespace BiliSearch
             double borderThickness = 1;
             double w = (double)values[0] - 2 * borderThickness;
             double h = (double)values[1] - 2 * borderThickness;
+            Rect rect;
             if (w > 2 && h > 2)
-            {
-                Rect rect = new Rect(borderThickness, borderThickness, w, h);
-                return rect;
-            }
+                rect = new Rect(borderThickness, borderThickness, w, h);
             else
-            {
-                return null;
-            }
+                rect = new Rect(borderThickness, borderThickness, 2, 2);
+            return rect;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
