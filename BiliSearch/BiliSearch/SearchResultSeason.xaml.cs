@@ -19,16 +19,18 @@ namespace BiliSearch
     /// <summary>
     /// SearchResultBangumi.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchResultBangumi : UserControl
+    public partial class SearchResultSeason : UserControl
     {
-        public SearchResultBangumi(SearchResultBox.Bangumi bangumi)
+        public SearchResultSeason(SearchResultBox.Season season)
         {
             InitializeComponent();
 
             this.Height = 216;
 
+            TypeBox.Text = season.SeasonTypeName;
+
             TitleBox.Inlines.Clear();
-            MatchCollection mc = Regex.Matches(bangumi.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
+            MatchCollection mc = Regex.Matches(season.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
             foreach (Match m in mc)
             {
                 Inline inline = new Run(m.Value);
@@ -44,24 +46,17 @@ namespace BiliSearch
                 TitleBox.Inlines.Add(inline);
             }
 
-            StylesBox.Text = bangumi.Styles;
-            AreasBox.Text = bangumi.Areas;
-            PubtimeBox.Text = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1)).AddSeconds(bangumi.Pubtime).ToString("yyyy-MM-dd");
-            CvBox.Text = bangumi.Cv.Replace('\n', ' ');
-            DescriptionBox.Text = bangumi.Description.Replace('\n', ' ');
+            StylesBox.Text = season.Styles;
+            AreasBox.Text = season.Areas;
+            PubtimeBox.Text = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1)).AddSeconds(season.Pubtime).ToString("yyyy-MM-dd");
+            CvBox.Text = season.Cv.Replace('\n', ' ');
+            DescriptionBox.Text = season.Description.Replace('\n', ' ');
 
             this.Loaded += async delegate (object senderD, RoutedEventArgs eD)
             {
-                System.Drawing.Bitmap bitmap = await bangumi.GetCoverAsync();
-                ImageBox.Source = BitmapToImageSource(bitmap);
+                System.Drawing.Bitmap bitmap = await season.GetCoverAsync();
+                ImageBox.Source = BiliApi.BitmapToImageSource(bitmap);
             };
-        }
-
-        private BitmapSource BitmapToImageSource(System.Drawing.Bitmap bitmap)
-        {
-            IntPtr ip = bitmap.GetHbitmap();
-            BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ip, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            return bitmapSource;
         }
     }
 }
