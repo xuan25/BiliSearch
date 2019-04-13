@@ -248,7 +248,15 @@ namespace BiliSearch
         private Task<List<Suggest>> GetSuggestAsync(string text, int delay)
         {
             if(cancellationTokenSource != null)
-                cancellationTokenSource.Cancel();
+                try
+                {
+                    cancellationTokenSource.Cancel();
+                }
+                catch (Exception)
+                {
+
+                }
+                
             cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
             Task<List<Suggest>> task = new Task<List<Suggest>>(() =>
