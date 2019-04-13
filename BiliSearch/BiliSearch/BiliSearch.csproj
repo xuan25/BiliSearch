@@ -61,6 +61,9 @@
     <Compile Include="SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SearchResultBangumi.xaml.cs">
+      <DependentUpon>SearchResultBangumi.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SearchResultBox.xaml.cs">
       <DependentUpon>SearchResultBox.xaml</DependentUpon>
     </Compile>
@@ -76,6 +79,26 @@
     <Compile Include="SuggestItemUser.xaml.cs">
       <DependentUpon>SuggestItemUser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WpfAnimatedGif\AnimationCache.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifApplicationExtension.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifBlock.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifBlockKind.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifColor.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifCommentExtension.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifDecoderException.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifExtension.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifFile.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifFrame.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifGraphicControlExtension.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifHeader.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifHelpers.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifImageData.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifImageDescriptor.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifLogicalScreenDescriptor.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifPlainTextExtension.cs" />
+    <Compile Include="WpfAnimatedGif\Decoding\GifTrailer.cs" />
+    <Compile Include="WpfAnimatedGif\ImageAnimationController.cs" />
+    <Compile Include="WpfAnimatedGif\ImageBehavior.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -92,6 +115,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SearchBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchResultBangumi.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -147,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\img_loading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\loading.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

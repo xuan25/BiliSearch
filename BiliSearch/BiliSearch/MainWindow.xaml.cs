@@ -16,9 +16,9 @@ namespace BiliSearch
             InitializeComponent();
         }
 
-        private void SearchBox_Search(SearchBox sender, string text)
+        private async void SearchBox_Search(SearchBox sender, string text)
         {
-            ResultBox.Search(text);
+            await ResultBox.SearchAsync(text);
         }
 
         private void SearchBox_SuggestionsRecieved(SearchBox sender, string text, string json)
