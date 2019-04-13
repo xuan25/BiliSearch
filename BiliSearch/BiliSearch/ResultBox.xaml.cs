@@ -87,6 +87,31 @@ namespace BiliSearch
             }
         }
 
+        public class User
+        {
+            public long Mid;
+            public string Upic;
+            public string Uname;
+            public long Videos;
+            public long Fans;
+            public string Usign;
+
+            public User(IJson json)
+            {
+                Mid = json.GetValue("mid").ToLong();
+                Upic = "https:" + Regex.Unescape(json.GetValue("upic").ToString());
+                Uname = Regex.Unescape(json.GetValue("uname").ToString());
+                Videos = json.GetValue("videos").ToLong();
+                Fans = json.GetValue("fans").ToLong();
+                Usign = Regex.Unescape(json.GetValue("usign").ToString());
+            }
+
+            public Task<System.Drawing.Bitmap> GetPicAsync()
+            {
+                return BiliApi.GetImageAsync(Upic);
+            }
+        }
+
         public ResultBox()
         {
             InitializeComponent();
@@ -192,6 +217,11 @@ namespace BiliSearch
                         }
                         break;
                     case "bili_user":
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            User user = new User(v);
+                            ContentPanel.Children.Add(new ResultUser(user));
+                        }
                         break;
                 }
         }
