@@ -65,6 +65,7 @@ namespace BiliSearch
             public string Description;
             public long SeasonId;
             public string SeasonTypeName;
+            public string OrgTitle;
 
             public Season(IJson json, IJson cardsJson)
             {
@@ -77,6 +78,7 @@ namespace BiliSearch
                 Description = Regex.Unescape(json.GetValue("desc").ToString());
                 SeasonId = json.GetValue("season_id").ToLong();
                 SeasonTypeName = cardsJson.GetValue("result").GetValue(SeasonId.ToString()).GetValue("season_type_name").ToString();
+                OrgTitle = System.Net.WebUtility.HtmlDecode(Regex.Unescape(json.GetValue("org_title").ToString()));
             }
 
             public Task<System.Drawing.Bitmap> GetCoverAsync()

@@ -30,7 +30,11 @@ namespace BiliSearch
             TypeBox.Text = season.SeasonTypeName;
 
             TitleBox.Inlines.Clear();
-            MatchCollection mc = Regex.Matches(season.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
+            MatchCollection mc;
+            if (season.Title != null && season.Title != "")
+                mc = Regex.Matches(season.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
+            else
+                mc = Regex.Matches(season.OrgTitle, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
             foreach (Match m in mc)
             {
                 Inline inline = new Run(m.Value);
