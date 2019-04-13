@@ -147,50 +147,51 @@ namespace BiliSearch
 
         private async void ShowResult(IJson json, string type)
         {
-            switch (type)
-            {
-                case "video":
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        Video video = new Video(v);
-                        ContentPanel.Children.Add(new ResultVideo(video));
-                    }
-                    break;
-                case "media_bangumi":
-                    StringBuilder stringBuilder = new StringBuilder();
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        stringBuilder.Append(',');
-                        stringBuilder.Append(v.GetValue("season_id").ToString());
-                    }
-                    Dictionary<string, string> dic = new Dictionary<string, string>();
-                    dic.Add("season_ids", stringBuilder.ToString().Substring(1));
-                    IJson cardsJson = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic);
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        Season season = new Season(v, cardsJson);
-                        ContentPanel.Children.Add(new ResultSeason(season));
-                    }
-                    break;
-                case "media_ft":
-                    StringBuilder stringBuilder1 = new StringBuilder();
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        stringBuilder1.Append(',');
-                        stringBuilder1.Append(v.GetValue("season_id").ToString());
-                    }
-                    Dictionary<string, string> dic1 = new Dictionary<string, string>();
-                    dic1.Add("season_ids", stringBuilder1.ToString().Substring(1));
-                    IJson cardsJson1 = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic1);
-                    foreach (IJson v in json.GetValue("data").GetValue("result"))
-                    {
-                        Season season = new Season(v, cardsJson1);
-                        ContentPanel.Children.Add(new ResultSeason(season));
-                    }
-                    break;
-                case "bili_user":
-                    break;
-            }
+            if(((JsonArray)json.GetValue("data").GetValue("result")).Count > 0)
+                switch (type)
+                {
+                    case "video":
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            Video video = new Video(v);
+                            ContentPanel.Children.Add(new ResultVideo(video));
+                        }
+                        break;
+                    case "media_bangumi":
+                        StringBuilder stringBuilder = new StringBuilder();
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            stringBuilder.Append(',');
+                            stringBuilder.Append(v.GetValue("season_id").ToString());
+                        }
+                        Dictionary<string, string> dic = new Dictionary<string, string>();
+                        dic.Add("season_ids", stringBuilder.ToString().Substring(1));
+                        IJson cardsJson = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic);
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            Season season = new Season(v, cardsJson);
+                            ContentPanel.Children.Add(new ResultSeason(season));
+                        }
+                        break;
+                    case "media_ft":
+                        StringBuilder stringBuilder1 = new StringBuilder();
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            stringBuilder1.Append(',');
+                            stringBuilder1.Append(v.GetValue("season_id").ToString());
+                        }
+                        Dictionary<string, string> dic1 = new Dictionary<string, string>();
+                        dic1.Add("season_ids", stringBuilder1.ToString().Substring(1));
+                        IJson cardsJson1 = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic1);
+                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        {
+                            Season season = new Season(v, cardsJson1);
+                            ContentPanel.Children.Add(new ResultSeason(season));
+                        }
+                        break;
+                    case "bili_user":
+                        break;
+                }
         }
 
         private async void RadioButton_Checked(object sender, RoutedEventArgs e)
