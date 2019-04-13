@@ -94,7 +94,7 @@ namespace Json
             return false;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             throw new System.NotImplementedException();
         }

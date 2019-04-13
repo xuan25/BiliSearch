@@ -17,42 +17,42 @@ namespace Json
 
         public bool Contains(object index)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public double ToDouble()
         {
-            throw new NotImplementedException();
+            return double.Parse(Value);
         }
 
         public long ToLong()
         {
-            throw new NotImplementedException();
+            return long.Parse(Value);
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return Value;
         }
 
         public bool ToBool()
         {
-            throw new System.NotImplementedException();
+            return bool.Parse(Value);
         }
 
         public IJson GetValue(object index)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool SetValue(object index, object value)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 
@@ -66,12 +66,12 @@ namespace Json
 
         public bool Contains(object index)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public double ToDouble()
         {
-            throw new NotImplementedException();
+            return Value;
         }
 
         public long ToLong()
@@ -79,29 +79,32 @@ namespace Json
             return Value;
         }
 
-        public string ToString()
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return Value.ToString();
         }
 
         public bool ToBool()
         {
-            throw new System.NotImplementedException();
+            if (Value > 0)
+                return true;
+            else
+                return false;
         }
 
         public IJson GetValue(object index)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool SetValue(object index, object value)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 
@@ -115,7 +118,7 @@ namespace Json
 
         public bool Contains(object index)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public double ToDouble()
@@ -125,32 +128,35 @@ namespace Json
 
         public long ToLong()
         {
-            throw new NotImplementedException();
+            return long.Parse(Value.ToString());
         }
 
-        public string ToString()
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return Value.ToString();
         }
 
         public bool ToBool()
         {
-            throw new System.NotImplementedException();
+            if (Value > 0)
+                return true;
+            else
+                return false;
         }
 
         public IJson GetValue(object index)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool SetValue(object index, object value)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 
@@ -164,42 +170,48 @@ namespace Json
 
         public bool Contains(object index)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public double ToDouble()
         {
-            throw new NotImplementedException();
+            if (Value)
+                return 1;
+            else
+                return 0;
         }
 
         public long ToLong()
         {
-            throw new NotImplementedException();
+            if (Value)
+                return 1;
+            else
+                return 0;
         }
 
-        public string ToString()
+        public override string ToString()
         {
-            throw new NotImplementedException();
+            return Value.ToString();
         }
 
         public bool ToBool()
         {
-            throw new System.NotImplementedException();
+            return Value;
         }
 
         public IJson GetValue(object index)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool SetValue(object index, object value)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

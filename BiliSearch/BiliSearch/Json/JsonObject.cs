@@ -99,7 +99,7 @@ namespace Json
             return dictionary.ContainsKey((string)name);
         }
 
-        public string ToString()
+        public override string ToString()
         {
             throw new System.NotImplementedException();
         }
