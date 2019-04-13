@@ -191,18 +191,14 @@ namespace BiliSearch
                 SuggestList.Visibility = Visibility.Hidden;
         }
 
-        private void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private async void ListBoxItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SearchBtn.Focus();
-            InputBox.Text = ((ListBoxItem)sender).Tag.ToString();
-            Search?.Invoke(this, InputBox.Text);
+            Confirm();
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            await GetSuggestAsync("", 0);
-            SuggestList.Visibility = Visibility.Hidden;
-            Search?.Invoke(this, InputBox.Text);
+            Confirm();
         }
 
         private CancellationTokenSource cancellationTokenSource;
@@ -286,10 +282,7 @@ namespace BiliSearch
             }
             else if(e.Key == Key.Enter)
             {
-                SearchBtn.Focus();
-                await GetSuggestAsync("", 0);
-                SuggestList.Visibility = Visibility.Hidden;
-                Search?.Invoke(this, InputBox.Text);
+                Confirm();
             }
         }
 
@@ -310,13 +303,19 @@ namespace BiliSearch
             }
             else if (e.Key == Key.Enter)
             {
-                SearchBtn.Focus();
-                await GetSuggestAsync("", 0);
                 InputBox.Text = ((ListBoxItem)((ListBox)sender).SelectedItem).Tag.ToString();
-                Search?.Invoke(this, InputBox.Text);
+                Confirm();
                 e.Handled = true;
             }
             e.Handled = true;
+        }
+
+        private async void Confirm()
+        {
+            SearchBtn.Focus();
+            await GetSuggestAsync("", 0);
+            SuggestList.Visibility = Visibility.Hidden;
+            Search?.Invoke(this, InputBox.Text);
         }
     }
 
