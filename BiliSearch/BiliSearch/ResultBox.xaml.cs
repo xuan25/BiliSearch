@@ -251,10 +251,7 @@ namespace BiliSearch
                 Dictionary<string, string> dic = new Dictionary<string, string>();
                 dic.Add("mid", ((ResultUser)sender).Mid.ToString());
                 dic.Add("pagesize", "30");
-                dic.Add("tid", "0");
                 dic.Add("page", "1");
-                dic.Add("keyword", "");
-                dic.Add("order", "pubdate");
                 IJson json = BiliApi.GetJsonResult("https://space.bilibili.com/ajax/member/getSubmitVideos", dic);
                 Dispatcher.Invoke(new Action(() =>
                 {

@@ -110,13 +110,21 @@ namespace BiliSearch
 
         public static System.Drawing.Bitmap GetImage(string url)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
-            response.Close();
-            dataStream.Close();
-            return bitmap;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(dataStream);
+                response.Close();
+                dataStream.Close();
+                return bitmap;
+            }
+            catch (Exception)
+            {
+                return new System.Drawing.Bitmap(1,1);
+            }
+            
         }
 
         public static BitmapSource BitmapToImageSource(System.Drawing.Bitmap bitmap)
