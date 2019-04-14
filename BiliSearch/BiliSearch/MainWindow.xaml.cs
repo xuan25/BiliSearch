@@ -20,11 +20,6 @@ namespace BiliSearch
         {
             await ResultBox.SearchAsync(text);
         }
-
-        private void SearchBox_SuggestionsRecieved(SearchBox sender, string text, string json)
-        {
-            Console.WriteLine("{0} - {1}", text, json);
-        }
     }
 
     

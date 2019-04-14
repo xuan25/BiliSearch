@@ -25,7 +25,7 @@ namespace BiliSearch
     /// </summary>
     public partial class ResultBox : UserControl
     {
-        public delegate void SelectedDel(string msg);
+        public delegate void SelectedDel(long id);
         public event SelectedDel VedioSelected;
         public event SelectedDel BangumiSelected;
         public event SelectedDel FtSelected;
@@ -38,6 +38,7 @@ namespace BiliSearch
             public long Play;
             public long Pubdate;
             public string Author;
+            public long Id;
 
             public Video(IJson json)
             {
@@ -46,6 +47,7 @@ namespace BiliSearch
                 Play = json.GetValue("play").ToLong();
                 Pubdate = json.GetValue("pubdate").ToLong();
                 Author = Regex.Unescape(json.GetValue("author").ToString());
+                Id = json.GetValue("id").ToLong();
             }
 
             public Task<System.Drawing.Bitmap> GetPicAsync()
@@ -174,7 +176,9 @@ namespace BiliSearch
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
                             Video video = new Video(v);
-                            ContentPanel.Children.Add(new ResultVideo(video));
+                            ResultVideo resultVideo = new ResultVideo(video);
+                            resultVideo.PreviewMouseLeftButtonDown += ResultVideo_PreviewMouseLeftButtonDown;
+                            ContentPanel.Children.Add(resultVideo);
                         }
                         break;
                     case "media_bangumi":
@@ -190,7 +194,9 @@ namespace BiliSearch
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
                             Season season = new Season(v, cardsJson);
-                            ContentPanel.Children.Add(new ResultSeason(season));
+                            ResultSeason resultSeason = new ResultSeason(season);
+                            resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
+                            ContentPanel.Children.Add(resultSeason);
                         }
                         break;
                     case "media_ft":
@@ -206,6 +212,8 @@ namespace BiliSearch
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
                             Season season = new Season(v, cardsJson1);
+                            ResultSeason resultSeason = new ResultSeason(season);
+                            resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
                             ContentPanel.Children.Add(new ResultSeason(season));
                         }
                         break;
@@ -213,10 +221,27 @@ namespace BiliSearch
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
                             User user = new User(v);
-                            ContentPanel.Children.Add(new ResultUser(user));
+                            ResultUser resultUser = new ResultUser(user);
+                            resultUser.PreviewMouseLeftButtonDown += ResultUser_PreviewMouseLeftButtonDown;
+                            ContentPanel.Children.Add(resultUser);
                         }
                         break;
                 }
+        }
+
+        private void ResultUser_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ResultSeason_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ResultVideo_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void RadioButton_Checked(object sender, RoutedEventArgs e)

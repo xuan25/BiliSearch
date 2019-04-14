@@ -24,9 +24,6 @@ namespace BiliSearch
         public delegate void SearchDel(SearchBox sender, string text);
         public event SearchDel Search;
 
-        public delegate void SuggestionsRecievedDel(SearchBox sender, string text, string json);
-        public event SuggestionsRecievedDel SuggestionsRecieved;
-
         public static readonly DependencyProperty SuggestDelayProperty = DependencyProperty.Register("SuggestDelay", typeof(int), typeof(SearchBox), new FrameworkPropertyMetadata(100));
         public int SuggestDelay
         {

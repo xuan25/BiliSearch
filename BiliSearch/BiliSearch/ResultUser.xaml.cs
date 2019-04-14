@@ -20,10 +20,12 @@ namespace BiliSearch
     /// </summary>
     public partial class ResultUser : UserControl
     {
+        public long Mid;
         public ResultUser(ResultBox.User user)
         {
             InitializeComponent();
 
+            Mid = user.Mid;
             UnameBox.Text = user.Uname;
             VideosBox.Text = BiliApi.FormatNum(user.Videos, 1);
             FansBox.Text = BiliApi.FormatNum(user.Fans, 1);

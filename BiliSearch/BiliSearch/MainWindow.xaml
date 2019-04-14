@@ -12,6 +12,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <local:ResultBox Grid.Row="1" x:Name="ResultBox"/>
-        <local:SearchBox Margin="50,10" Grid.Row="0" Grid.RowSpan="2" SuggestDelay="100" MaxWidth="800" Search="SearchBox_Search" SuggestionsRecieved="SearchBox_SuggestionsRecieved"/>
+        <local:SearchBox Margin="50,10" Grid.Row="0" Grid.RowSpan="2" SuggestDelay="100" MaxWidth="800" Search="SearchBox_Search"/>
     </Grid>
 </Window>

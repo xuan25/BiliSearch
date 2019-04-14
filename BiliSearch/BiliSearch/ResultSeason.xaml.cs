@@ -21,9 +21,12 @@ namespace BiliSearch
     /// </summary>
     public partial class ResultSeason : UserControl
     {
+        public long SeasonId;
         public ResultSeason(ResultBox.Season season)
         {
             InitializeComponent();
+
+            SeasonId = season.SeasonId;
 
             TypeBox.Text = season.SeasonTypeName;
 

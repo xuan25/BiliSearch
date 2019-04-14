@@ -5,7 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BiliSearch"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="170" Height="200" Width="170" Margin="16,10">
+             d:DesignHeight="200" d:DesignWidth="170" x:Name="This" Height="200" Width="170" Margin="16,10" Cursor="Hand">
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#e5e9ef"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     <UserControl.Resources>
         <local:RectConverter x:Key="RectConverter"/>
         <local:BorderRectConverter x:Key="BorderRectConverter"/>
@@ -35,26 +44,24 @@
                     <DrawingGroup>
                         <GeometryDrawing Brush="#ccd0d7">
                             <GeometryDrawing.Geometry>
-                                <RectangleGeometry>
-                                    <RectangleGeometry.Rect>
-                                        <MultiBinding Converter="{StaticResource RectConverter}">
-                                            <Binding ElementName="MainGrid" Path="ActualWidth"/>
-                                            <Binding ElementName="MainGrid" Path="ActualHeight"/>
-                                        </MultiBinding>
-                                    </RectangleGeometry.Rect>
-                                </RectangleGeometry>
-                            </GeometryDrawing.Geometry>
-                        </GeometryDrawing>
-                        <GeometryDrawing Brush="White">
-                            <GeometryDrawing.Geometry>
-                                <RectangleGeometry RadiusX="2" RadiusY="2">
-                                    <RectangleGeometry.Rect>
-                                        <MultiBinding Converter="{StaticResource BorderRectConverter}">
-                                            <Binding ElementName="MainGrid" Path="ActualWidth"/>
-                                            <Binding ElementName="MainGrid" Path="ActualHeight"/>
-                                        </MultiBinding>
-                                    </RectangleGeometry.Rect>
-                                </RectangleGeometry>
+                                <GeometryGroup>
+                                    <RectangleGeometry>
+                                        <RectangleGeometry.Rect>
+                                            <MultiBinding Converter="{StaticResource RectConverter}">
+                                                <Binding ElementName="MainGrid" Path="ActualWidth"/>
+                                                <Binding ElementName="MainGrid" Path="ActualHeight"/>
+                                            </MultiBinding>
+                                        </RectangleGeometry.Rect>
+                                    </RectangleGeometry>
+                                    <RectangleGeometry RadiusX="2" RadiusY="2">
+                                        <RectangleGeometry.Rect>
+                                            <MultiBinding Converter="{StaticResource BorderRectConverter}">
+                                                <Binding ElementName="MainGrid" Path="ActualWidth"/>
+                                                <Binding ElementName="MainGrid" Path="ActualHeight"/>
+                                            </MultiBinding>
+                                        </RectangleGeometry.Rect>
+                                    </RectangleGeometry>
+                                </GeometryGroup>
                             </GeometryDrawing.Geometry>
                         </GeometryDrawing>
                     </DrawingGroup>
