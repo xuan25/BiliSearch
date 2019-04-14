@@ -27,9 +27,7 @@ namespace BiliSearch
     {
         public delegate void SelectedDel(long id);
         public event SelectedDel VedioSelected;
-        public event SelectedDel BangumiSelected;
-        public event SelectedDel FtSelected;
-        public event SelectedDel UserSelected;
+        public event SelectedDel SeasonSelected;
 
         public class Video
         {
@@ -38,16 +36,19 @@ namespace BiliSearch
             public long Play;
             public long Pubdate;
             public string Author;
-            public long Id;
+            public long Aid;
 
             public Video(IJson json)
             {
                 Pic = "https:" + Regex.Unescape(json.GetValue("pic").ToString());
                 Title = System.Net.WebUtility.HtmlDecode(Regex.Unescape(json.GetValue("title").ToString()));
                 Play = json.GetValue("play").ToLong();
-                Pubdate = json.GetValue("pubdate").ToLong();
+                if(json.Contains("pubdate"))
+                    Pubdate = json.GetValue("pubdate").ToLong();
+                else
+                    Pubdate = json.GetValue("created").ToLong();
                 Author = Regex.Unescape(json.GetValue("author").ToString());
-                Id = json.GetValue("id").ToLong();
+                Aid = json.GetValue("aid").ToLong();
             }
 
             public Task<System.Drawing.Bitmap> GetPicAsync()
@@ -121,10 +122,12 @@ namespace BiliSearch
 
         public string SearchText;
         public string NavType;
+        public RadioButton TypeBtn;
 
         private CancellationTokenSource cancellationTokenSource;
         public Task SearchAsync(string text)
         {
+            TypeBtn.IsChecked = true;
             if (cancellationTokenSource != null)
                 cancellationTokenSource.Cancel();
                 
@@ -149,6 +152,7 @@ namespace BiliSearch
 
         public void Search(string text)
         {
+            TypeBtn.IsChecked = true;
             ContentPanel.Children.Clear();
             string type = NavType;
             IJson json = GetResult(text, type);
@@ -231,21 +235,53 @@ namespace BiliSearch
 
         private void ResultUser_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            TypeBtn.IsChecked = false;
+            if (cancellationTokenSource != null)
+                cancellationTokenSource.Cancel();
+
+            cancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+            ContentPanel.Children.Clear();
+            LoadingPrompt.Visibility = Visibility.Visible;
+            Task task = new Task(() =>
+            {
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                dic.Add("mid", ((ResultUser)sender).Mid.ToString());
+                dic.Add("pagesize", "30");
+                dic.Add("tid", "0");
+                dic.Add("page", "1");
+                dic.Add("keyword", "");
+                dic.Add("order", "pubdate");
+                IJson json = BiliApi.GetJsonResult("https://space.bilibili.com/ajax/member/getSubmitVideos", dic);
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach(IJson v in json.GetValue("data").GetValue("vlist"))
+                    {
+                        Video video = new Video(v);
+                        ResultVideo resultVideo = new ResultVideo(video);
+                        resultVideo.PreviewMouseLeftButtonDown += ResultVideo_PreviewMouseLeftButtonDown;
+                        ContentPanel.Children.Add(resultVideo);
+                    }
+                    LoadingPrompt.Visibility = Visibility.Hidden;
+                }));
+            }, cancellationTokenSource.Token);
+            task.Start();
         }
 
         private void ResultSeason_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            SeasonSelected?.Invoke(((ResultSeason)sender).SeasonId);
         }
 
         private void ResultVideo_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            VedioSelected?.Invoke(((ResultVideo)sender).Aid);
         }
 
         private async void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
+            TypeBtn = (RadioButton)sender;
             NavType = ((RadioButton)sender).Tag.ToString();
             if (SearchText != null && SearchText != "")
             {

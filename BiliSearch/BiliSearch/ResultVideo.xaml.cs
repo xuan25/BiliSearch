@@ -21,13 +21,13 @@ namespace BiliSearch
     /// </summary>
     public partial class ResultVideo : UserControl
     {
-        public long Id;
+        public long Aid;
 
         public ResultVideo(ResultBox.Video video)
         {
             InitializeComponent();
 
-            Id = video.Id;
+            Aid = video.Aid;
 
             TitleBox.Inlines.Clear();
             MatchCollection mc = Regex.Matches(video.Title, "(\\<em.*?\\>(?<Word>.*?)\\</em\\>|.)");
