@@ -127,6 +127,7 @@ namespace BiliSearch
         private CancellationTokenSource cancellationTokenSource;
         public Task SearchAsync(string text)
         {
+            ContentViewer.ScrollToHome();
             TypeBtn.IsChecked = true;
             if (cancellationTokenSource != null)
                 cancellationTokenSource.Cancel();
@@ -152,6 +153,7 @@ namespace BiliSearch
 
         public void Search(string text)
         {
+            ContentViewer.ScrollToHome();
             TypeBtn.IsChecked = true;
             ContentPanel.Children.Clear();
             string type = NavType;
