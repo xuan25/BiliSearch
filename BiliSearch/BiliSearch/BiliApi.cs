@@ -23,7 +23,7 @@ namespace BiliSearch
             if (addVerification)
                 dic = AddVerification(dic);
             StringBuilder stringBuilder = new StringBuilder();
-            foreach (KeyValuePair<string, string> item in dic.OrderBy(i => i.Key))
+            foreach (KeyValuePair<string, string> item in dic)
             {
                 stringBuilder.Append("&");
                 stringBuilder.Append(item.Key);
@@ -35,10 +35,10 @@ namespace BiliSearch
 
         public static Dictionary<string, string> AddVerification(Dictionary<string, string> dic)
         {
-            string baseParams = DicToParams(dic, false);
-            string sign = CreateMD5Hash(baseParams + SECRET_KEY);
             dic.Add("appkey", APP_KEY);
             dic.Add("build", BUILD);
+            string baseParams = DicToParams(dic.OrderBy(i => i.Key).ToDictionary(i => i.Key, i => i.Value), false);
+            string sign = CreateMD5Hash(baseParams + SECRET_KEY);
             dic.Add("sign", sign);
             return dic;
         }
