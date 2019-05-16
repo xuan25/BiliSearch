@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Bili;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 
 namespace BiliSearch
 {
     /// <summary>
     /// UserSuggestItem.xaml 的交互逻辑
+    /// Author: Xuan525
+    /// Date: 24/04/2019
     /// </summary>
     public partial class SuggestItemUser : UserControl
     {
