@@ -1,8 +1,7 @@
-﻿using Json;
+﻿using Bili;
+using Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,25 +9,37 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BiliSearch
 {
     /// <summary>
     /// SearchResultBox.xaml 的交互逻辑
+    /// Author: Xuan525
+    /// Date: 24/04/2019
     /// </summary>
     public partial class ResultBox : UserControl
     {
-        public delegate void SelectedDel(long id);
-        public event SelectedDel VedioSelected;
+        /// <summary>
+        /// Selected delegate.
+        /// </summary>
+        /// <param name="title">Title of the selected item</param>
+        /// <param name="id">Aid/Season-id of the selected item</param>
+        public delegate void SelectedDel(string title, long id);
+        /// <summary>
+        /// Occurs when a Video has been selected.
+        /// </summary>
+        public event SelectedDel VideoSelected;
+        /// <summary>
+        /// Occurs when a Season has been selected.
+        /// </summary>
         public event SelectedDel SeasonSelected;
 
+        /// <summary>
+        /// Class <c>Video</c> models the info of a Video.
+        /// Author: Xuan525
+        /// Date: 24/04/2019
+        /// </summary>
         public class Video
         {
             public string Pic;
@@ -57,6 +68,11 @@ namespace BiliSearch
             }
         }
 
+        /// <summary>
+        /// Class <c>Season</c> models the info of a Season.
+        /// Author: Xuan525
+        /// Date: 24/04/2019
+        /// </summary>
         public class Season
         {
             public string Cover;
@@ -90,6 +106,11 @@ namespace BiliSearch
             }
         }
 
+        /// <summary>
+        /// Class <c>User</c> models the info of a User.
+        /// Author: Xuan525
+        /// Date: 24/04/2019
+        /// </summary>
         public class User
         {
             public long Mid;
@@ -125,40 +146,60 @@ namespace BiliSearch
         public RadioButton TypeBtn;
 
         private CancellationTokenSource cancellationTokenSource;
-        public Task SearchAsync(string text)
+
+        /// <summary>
+        /// Search a text asynchronously.
+        /// </summary>
+        /// <param name="text">text</param>
+        public void SearchAsync(string text)
         {
-            ContentViewer.ScrollToHome();
-            TypeBtn.IsChecked = true;
             if (cancellationTokenSource != null)
                 cancellationTokenSource.Cancel();
-                
-            cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
-
+            ContentViewer.ScrollToHome();
             ContentPanel.Children.Clear();
-            LoadingPrompt.Visibility = Visibility.Visible;
-            Task task = new Task(() =>
+            if (text != null && text.Trim() != string.Empty)
             {
-                string type = NavType;
-                IJson json = GetResult(text, type);
-                Dispatcher.Invoke(new Action(() =>
+                TypeBtn.IsChecked = true;
+
+                cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+                LoadingPrompt.Visibility = Visibility.Visible;
+                Task task = new Task(() =>
                 {
-                    ShowResult(json, type);
-                    LoadingPrompt.Visibility = Visibility.Hidden;
-                }));
-            }, cancellationTokenSource.Token);
-            task.Start();
-            return task;
+                    string type = NavType;
+                    IJson json = GetResult(text, type);
+                    if (json != null)
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            if (cancellationToken.IsCancellationRequested)
+                                return;
+                            ShowResult(json, type);
+                            LoadingPrompt.Visibility = Visibility.Hidden;
+                        }));
+                });
+                task.Start();
+            }
+                
         }
 
+        /// <summary>
+        /// Search a text.
+        /// </summary>
+        /// <param name="text">text</param>
         public void Search(string text)
         {
             ContentViewer.ScrollToHome();
-            TypeBtn.IsChecked = true;
             ContentPanel.Children.Clear();
-            string type = NavType;
-            IJson json = GetResult(text, type);
-            ShowResult(json, type);
+            if (text != null && text.Trim() != string.Empty)
+            {
+                TypeBtn.IsChecked = true;
+                string type = NavType;
+                IJson json = GetResult(text, type);
+                if (json != null)
+                    ShowResult(json, type);
+            }
+            
         }
 
         private IJson GetResult(string text, string type)
@@ -169,13 +210,21 @@ namespace BiliSearch
             dic.Add("highlight", "1");
             dic.Add("search_type", type);
             dic.Add("keyword", text);
-            IJson json = BiliApi.GetJsonResult("https://api.bilibili.com/x/web-interface/search/type", dic);
-            return json;
+            try
+            {
+                IJson json = BiliApi.GetJsonResult("https://api.bilibili.com/x/web-interface/search/type", dic, true);
+                return json;
+            }
+            catch (System.Net.WebException)
+            {
+                return null;
+            }
+            
         }
 
         private async void ShowResult(IJson json, string type)
         {
-            if(((JsonArray)json.GetValue("data").GetValue("result")).Count > 0)
+            if(json.GetValue("code").ToLong() == 0 && json.GetValue("data").GetValue("numresults").ToLong() > 0)
                 switch (type)
                 {
                     case "video":
@@ -188,39 +237,53 @@ namespace BiliSearch
                         }
                         break;
                     case "media_bangumi":
-                        StringBuilder stringBuilder = new StringBuilder();
+                        StringBuilder stringBuilderBangumi = new StringBuilder();
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
-                            stringBuilder.Append(',');
-                            stringBuilder.Append(v.GetValue("season_id").ToString());
+                            stringBuilderBangumi.Append(',');
+                            stringBuilderBangumi.Append(v.GetValue("season_id").ToString());
                         }
                         Dictionary<string, string> dic = new Dictionary<string, string>();
-                        dic.Add("season_ids", stringBuilder.ToString().Substring(1));
-                        IJson cardsJson = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic);
-                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        dic.Add("season_ids", stringBuilderBangumi.ToString().Substring(1));
+                        try
                         {
-                            Season season = new Season(v, cardsJson);
-                            ResultSeason resultSeason = new ResultSeason(season);
-                            resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
-                            ContentPanel.Children.Add(resultSeason);
+                            IJson cardsJson = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic, true);
+                            foreach (IJson v in json.GetValue("data").GetValue("result"))
+                            {
+                                Season season = new Season(v, cardsJson);
+                                ResultSeason resultSeason = new ResultSeason(season);
+                                resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
+                                ContentPanel.Children.Add(resultSeason);
+                            }
+                        }
+                        catch (WebException)
+                        {
+                            
                         }
                         break;
                     case "media_ft":
-                        StringBuilder stringBuilder1 = new StringBuilder();
+                        StringBuilder stringBuilderFt = new StringBuilder();
                         foreach (IJson v in json.GetValue("data").GetValue("result"))
                         {
-                            stringBuilder1.Append(',');
-                            stringBuilder1.Append(v.GetValue("season_id").ToString());
+                            stringBuilderFt.Append(',');
+                            stringBuilderFt.Append(v.GetValue("season_id").ToString());
                         }
                         Dictionary<string, string> dic1 = new Dictionary<string, string>();
-                        dic1.Add("season_ids", stringBuilder1.ToString().Substring(1));
-                        IJson cardsJson1 = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic1);
-                        foreach (IJson v in json.GetValue("data").GetValue("result"))
+                        dic1.Add("season_ids", stringBuilderFt.ToString().Substring(1));
+                        try
                         {
-                            Season season = new Season(v, cardsJson1);
-                            ResultSeason resultSeason = new ResultSeason(season);
-                            resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
-                            ContentPanel.Children.Add(new ResultSeason(season));
+                            IJson cardsJson1 = await BiliApi.GetJsonResultAsync("https://api.bilibili.com/pgc/web/season/cards", dic1, false);
+                            foreach (IJson v in json.GetValue("data").GetValue("result"))
+                            {
+                                Season season = new Season(v, cardsJson1);
+                                ResultSeason resultSeason = new ResultSeason(season);
+                                resultSeason.PreviewMouseLeftButtonDown += ResultSeason_PreviewMouseLeftButtonDown;
+                                ContentPanel.Children.Add(resultSeason);
+                            }
+                        }
+                        catch (WebException)
+                        {
+
                         }
                         break;
                     case "bili_user":
@@ -252,39 +315,46 @@ namespace BiliSearch
                 dic.Add("mid", ((ResultUser)sender).Mid.ToString());
                 dic.Add("pagesize", "30");
                 dic.Add("page", "1");
-                IJson json = BiliApi.GetJsonResult("https://space.bilibili.com/ajax/member/getSubmitVideos", dic);
-                Dispatcher.Invoke(new Action(() =>
+                try
                 {
-                    foreach(IJson v in json.GetValue("data").GetValue("vlist"))
+                    IJson json = BiliApi.GetJsonResult("https://space.bilibili.com/ajax/member/getSubmitVideos", dic, true);
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        Video video = new Video(v);
-                        ResultVideo resultVideo = new ResultVideo(video);
-                        resultVideo.PreviewMouseLeftButtonDown += ResultVideo_PreviewMouseLeftButtonDown;
-                        ContentPanel.Children.Add(resultVideo);
-                    }
-                    LoadingPrompt.Visibility = Visibility.Hidden;
-                }));
+                        foreach (IJson v in json.GetValue("data").GetValue("vlist"))
+                        {
+                            Video video = new Video(v);
+                            ResultVideo resultVideo = new ResultVideo(video);
+                            resultVideo.PreviewMouseLeftButtonDown += ResultVideo_PreviewMouseLeftButtonDown;
+                            ContentPanel.Children.Add(resultVideo);
+                        }
+                        LoadingPrompt.Visibility = Visibility.Hidden;
+                    }));
+                }
+                catch (Exception)
+                {
+
+                }
             }, cancellationTokenSource.Token);
             task.Start();
         }
 
         private void ResultSeason_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            SeasonSelected?.Invoke(((ResultSeason)sender).SeasonId);
+            SeasonSelected?.Invoke(((ResultSeason)sender).Title, ((ResultSeason)sender).SeasonId);
         }
 
         private void ResultVideo_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            VedioSelected?.Invoke(((ResultVideo)sender).Aid);
+            VideoSelected?.Invoke(((ResultVideo)sender).Title, ((ResultVideo)sender).Aid);
         }
 
-        private async void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
             TypeBtn = (RadioButton)sender;
             NavType = ((RadioButton)sender).Tag.ToString();
             if (SearchText != null && SearchText != "")
             {
-                await SearchAsync(SearchText);
+                SearchAsync(SearchText);
             }
         }
     }
